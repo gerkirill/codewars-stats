@@ -17,23 +17,26 @@ const lecturesStartDate = new Date('2018-02-01T09:40:27Z');
   stats = (await Promise.all(stats))
     .sort( (a, b) => b[1] - a[1])
     .map(stat => console.log(`${stat[0]};${stat[1]}`));
-
-  async function getCatas(user) {
-    let page = 0;
-    let totalPages = 1;
-    let catas = [];
-    do {
-      let resp = await (await fetch(
-        `https://www.codewars.com/api/v1/users/${user}/code-challenges/completed?page=${page}`,
-        { headers: {Authorization: API_KEY} }
-      )).json();
-      catas = catas.concat(resp.data);
-      totalPages = resp.totalPages;
-    } while (++page < totalPages);
-    return catas.filter(cata=>cata);
-  }
-  async function countCatas(user, sinse) {
-    let catas = await getCatas(user);
-    return catas.filter(cata => new Date(cata.completedAt).getTime() > sinse.getTime()).length;
-  }
 })();
+
+// count all catas completed by the user since some date
+async function countCatas(user, sinse) {
+  let catas = await getCatas(user);
+  return catas.filter(cata => new Date(cata.completedAt).getTime() > sinse.getTime()).length;
+}
+
+// get all catas by the user name (pages aware, grabs all pages)
+async function getCatas(user) {
+  let page = 0;
+  let totalPages = 1;
+  let catas = [];
+  do {
+    let resp = await (await fetch(
+      `https://www.codewars.com/api/v1/users/${user}/code-challenges/completed?page=${page}`,
+      { headers: {Authorization: API_KEY} }
+    )).json();
+    catas = catas.concat(resp.data);
+    totalPages = resp.totalPages;
+  } while (++page < totalPages);
+  return catas.filter(cata=>cata);
+}
