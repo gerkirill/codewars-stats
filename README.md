@@ -3,6 +3,7 @@
 Collects number of catas completed by some users at codewars.com, starting since some date.
 
 ## Usage
+- grab your API key at https://www.codewars.com/users/edit and update index.js accordingly
 - npm install
 - npm start
 
